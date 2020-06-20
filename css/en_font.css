@@ -1,0 +1,27 @@
+
+@font-face {
+    font-family: "medium";
+    font-weight: normal;
+    font-style: normal;
+    src: url("/assets/font/charis/char_r.ttf");
+}
+@font-face {
+    font-family: "medium";
+    font-weight: normal;
+    font-style: italic;
+    src: url("/assets/font/charis/char_i.ttf");
+}
+article {
+    font-family: "medium", Georgia, Cambria, "Times New Roman", Times, serif;
+    margin-top: 2em;
+    margin-bottom: -0.46em;
+    line-height: 1.58;
+    color: rgba(0,0,0,0.84);
+    font-weight: 400;
+    font-size: 21px;
+    letter-spacing: -0.004em;
+    /* word-spacing: -1px; */
+
+    text-align: justify;
+}
+

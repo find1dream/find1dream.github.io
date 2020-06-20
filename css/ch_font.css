@@ -1,0 +1,38 @@
+
+@font-face {
+    font-family: "droid";
+    src: url("/assets/font/ch/Droid_Sans_Fallback.ttf");
+}
+@font-face {
+    font-family: "yahei";
+    src: url("/assets/font/ch/yahei.ttf");
+}
+@font-face {
+    font-family: "sans";
+    src: url("/assets/font/ch/sans.ttf");
+}
+article {
+   /* font-family: Tahoma, Arial, Helvetica, "Microsoft YaHei New", "Microsoft Yahei", "微软雅黑", "华文细黑", sans-serif;  */
+    font:400 17px/1.62 "Georgia", "Xin Gothic", "Hiragino Sans GB", "droid", "yahei", "sans"; 
+    margin: auto;
+    text-align: justify;
+    line-height: 34px;
+    color: #444443;
+    font-size: 17px/1.62
+}
+
+article.post {
+   /* font-family: Tahoma, Arial, Helvetica, "Microsoft YaHei New", "Microsoft Yahei", "微软雅黑", "华文细黑", sans-serif;  */
+    font:400 17px/1.62 "Georgia", "Xin Gothic", "Hiragino Sans GB", "droid", "yahei", "sans"; 
+    margin: auto;
+    text-align: justify;
+    line-height: 34px;
+    color: #444443;
+    font-size: 17px/1.62
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+    font-family "Georgia", "Xin Gothic", "Hiragino Sans GB", "droid", "yahei", "sans"; 
+    color: #222223;
+}
