@@ -5,6 +5,7 @@ git commit -m "$commit"
 git push
 JEKYLL_ENV=production bundle exec jekyll build --incremental
 cp .jekyll-metadata .jekyll-metadata_back
+cp ads.txt ./_site
 cd _site
 touch .nojekyll
 git add -A
