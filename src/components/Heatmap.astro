@@ -1,0 +1,65 @@
+---
+// GitHub-style calendar of commits per day, from src/data/contrib.json (scripts/contrib.sh).
+import data from '../data/contrib.json';
+import type { Lang } from '../data/content';
+interface Props { lang: Lang; less: string; more: string; caption: string }
+const { lang, less, more, caption } = Astro.props;
+
+const days = data.days as Record<string, number>;
+const start = new Date(`${data.since}T00:00:00Z`);
+const lastKey = Object.keys(days).sort().at(-1) ?? data.since;
+const end = new Date(`${lastKey}T00:00:00Z`);
+const endOfYear = new Date(Date.UTC(start.getUTCFullYear(), 11, 31));
+const until = end > endOfYear ? end : endOfYear;
+
+// Weeks start on Monday.
+const offset = (start.getUTCDay() + 6) % 7;
+const cells: { x: number; y: number; n: number; date: string; future: boolean }[] = [];
+const months: { x: number; label: string }[] = [];
+const fmt = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-CN' : lang, { month: 'short', timeZone: 'UTC' });
+for (let d = new Date(start), i = offset; d <= until; d.setUTCDate(d.getUTCDate() + 1), i++) {
+  const key = d.toISOString().slice(0, 10);
+  const x = Math.floor(i / 7), y = i % 7;
+  cells.push({ x, y, n: days[key] ?? 0, date: key, future: d > end });
+  if (d.getUTCDate() === 1) months.push({ x, label: fmt.format(d) });
+}
+const level = (n: number) => (n === 0 ? 0 : n < 3 ? 1 : n < 7 ? 2 : n < 15 ? 3 : 4);
+const S = 11, G = 3, weeks = Math.max(...cells.map((c) => c.x)) + 1;
+const W = weeks * (S + G), H = 7 * (S + G) + 16;
+---
+<figure class="heat">
+  <div class="scroll">
+    <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-label={caption}>
+      {months.map((m) => <text x={m.x * (S + G)} y="10" class="m">{m.label}</text>)}
+      <g transform="translate(0 16)">
+        {cells.map((c) => (
+          <rect x={c.x * (S + G)} y={c.y * (S + G)} width={S} height={S} rx="2" class={c.future ? 'f' : `l${level(c.n)}`}>
+            <title>{`${c.date}: ${c.n}`}</title>
+          </rect>
+        ))}
+      </g>
+    </svg>
+  </div>
+  <figcaption>
+    <span>{caption}</span>
+    <span class="legend">{less}{[0, 1, 2, 3, 4].map((l) => <i class={`l${l}`} />)}{more}</span>
+  </figcaption>
+</figure>
+
+<style>
+  .heat { margin: 0; }
+  .scroll { overflow-x: auto; padding-bottom: 4px; }
+  svg { display: block; max-width: none; }
+  .m { fill: var(--muted); font: 400 9px var(--f-mono); }
+  rect.l0, i.l0 { fill: var(--line); background: var(--line); }
+  rect.l1, i.l1 { fill: color-mix(in srgb, var(--accent) 28%, var(--bg)); background: color-mix(in srgb, var(--accent) 28%, var(--bg)); }
+  rect.l2, i.l2 { fill: color-mix(in srgb, var(--accent) 50%, var(--bg)); background: color-mix(in srgb, var(--accent) 50%, var(--bg)); }
+  rect.l3, i.l3 { fill: color-mix(in srgb, var(--accent) 75%, var(--bg)); background: color-mix(in srgb, var(--accent) 75%, var(--bg)); }
+  rect.l4, i.l4 { fill: var(--accent); background: var(--accent); }
+  rect.f { fill: none; stroke: var(--line); stroke-width: 1; }
+  figcaption { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 10px; font-size: 13px; color: var(--muted); }
+  .legend { display: inline-flex; align-items: center; gap: 3px; font-family: var(--f-mono); font-size: 11px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
+  .legend i:first-child { margin-left: 4px; }
+  .legend i:last-child { margin-right: 4px; }
+</style>

@@ -1,0 +1,17 @@
+{
+  "name": "find1dream.github.io",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host",
+    "build": "astro build",
+    "preview": "astro preview --host",
+    "cv": "node scripts/cv-pdf.mjs"
+  },
+  "dependencies": {
+    "astro": "^5.1.0"
+  },
+  "devDependencies": {
+    "playwright": "1.49.1"
+  }
+}

@@ -1,0 +1,64 @@
+---
+import { htmlLang, langs, type Lang } from '../data/content';
+interface Props { lang: Lang; title: string; description: string; path?: string; noindex?: boolean }
+const { lang, title, description, path = '', noindex = false } = Astro.props;
+const site = Astro.site?.toString().replace(/\/$/, '') ?? '';
+---
+<!doctype html>
+<html lang={htmlLang[lang]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {langs.map((l) => <link rel="alternate" hreflang={htmlLang[l]} href={`${site}/${l}/${path}`} />)}
+    <link rel="alternate" hreflang="x-default" href={`${site}/en/${path}`} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      (function () {
+        var t = 'light';
+        try { t = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light'; } catch (e) {}
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #ffffff; --surface: #f7f8fa; --ink: #111418; --muted: #5f6672; --line: #e6e8ec;
+    --accent: #2b59d9; --accent-soft: #e8eefc;
+    --f-sans: Inter, "Noto Sans JP", "Noto Sans SC", system-ui, sans-serif;
+    --f-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    color-scheme: light;
+  }
+  /* Light by default; dark only when the visitor picks it. */
+  :root[data-theme='dark'] {
+    --bg: #0e1014; --surface: #15181e; --ink: #eceef1; --muted: #9aa1ac; --line: #262a31;
+    --accent: #85a2ff; --accent-soft: #1b2440;
+    color-scheme: dark;
+  }
+  html:lang(ja) { --f-sans: Inter, "Noto Sans JP", system-ui, sans-serif; }
+  html:lang(zh-CN) { --f-sans: Inter, "Noto Sans SC", system-ui, sans-serif; }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 400 16px/1.7 var(--f-sans);
+    padding-left: max(20px, env(safe-area-inset-left, 0px));
+    padding-right: max(20px, env(safe-area-inset-right, 0px));
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
